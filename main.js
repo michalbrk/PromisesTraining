@@ -1,17 +1,24 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    function sync() {
-        
-        //Deferred will be called later (in another stack)
-        //because of the setTimeout function
-        //even though the postponing is set to 0
-        setTimeout(deferred, 0);
-        console.log('sync');
+    function sync(callback) {
+        setTimeout(function() {
+            
+            //Deferred function assignement to the constant
+            const res = deferred();
+            
+            //Invoking callback with the deferred function
+            //as the argument
+            callback(res);
+        }, 1000);
     }
     
     function deferred() {
-        console.log('deferred');
+        return 'deferred';
     }
     
-    sync();
+    //Callback declaration
+    //and invoking of the sync function
+    sync(function(result) {
+        console.log(result);
+    });
 });
