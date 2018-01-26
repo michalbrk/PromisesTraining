@@ -1,20 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    function step1() {
-        step2();
+    function sync() {
+        
+        //Deferred will be called later (in another stack)
+        //because of the setTimeout function
+        //even though the postponing is set to 0
+        setTimeout(deferred, 0);
+        console.log('sync');
     }
     
-    function step2() {
-        step3();
+    function deferred() {
+        console.log('deferred');
     }
     
-    function step3() {
-        step4();
-    }
-    
-    function step4() {
-        debugger;
-    }
-    
-    step1();
+    sync();
 });
