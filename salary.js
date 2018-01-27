@@ -10,12 +10,20 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 1000);
     }
     
-    function subtractTax(salary) {
-        return salary * .75;
+    function subtractTax(salary, callback) {
+        
+        //Implementing asynchrony to subtraction
+        setTimeout(() => {
+            callback(salary * .75);
+        }, 1000);
     }
     
-    function subtractRent(salary) {
-        return salary - 5000;
+    function subtractRent(salary, callback) {
+        
+        //Implementing async to subtraction
+        setTimeout(() => {
+            callback(salary - 5000);
+        }, 1000);
     }
     
     
@@ -24,16 +32,17 @@ document.addEventListener("DOMContentLoaded", function() {
     function getDisposIncome(callback) {
         
         //It uses async function - callback
-        getSalary(salary => {
-            
-            //This is done in the callback
-            salary = subtractTax(salary);
-            salary = subtractRent(salary);
-            callback(salary);
+        //Here starts a real callback hell!...
+        getSalary(salary_1 => {
+            subtractTax(salary_1, salary_2 => {
+                subtractRent(salary_2, salary_3 => {
+                    callback(salary_3);
+                });
+            });
         });
     }
     
-    getDisposIncome(salary => {
-        console.log(salary); 
+    getDisposIncome(disposable => {
+        console.log(disposable); 
     });
 });
