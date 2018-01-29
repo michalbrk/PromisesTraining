@@ -1,48 +1,48 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    //Callback whenever there is data coming from the server
-    //When bank sends money
-    function getSalary(callback) {
-        setTimeout(() => {
-            callback(33000);
-            
-            //Slow network request
-        }, 1000);
-    }
-    
-    function subtractTax(salary, callback) {
-        
-        //Implementing asynchrony to subtraction
-        setTimeout(() => {
-            callback(salary * .75);
-        }, 1000);
-    }
-    
-    function subtractRent(salary, callback) {
-        
-        //Implementing async to subtraction
-        setTimeout(() => {
-            callback(salary - 5000);
-        }, 1000);
-    }
-    
-    
-    //getDisp... has to be supplied with callback function
-    //Then we can subtract tax and rent
-    function getDisposIncome(callback) {
-        
-        //It uses async function - callback
-        //Here starts a real callback hell!...
-        getSalary(salary_1 => {
-            subtractTax(salary_1, salary_2 => {
-                subtractRent(salary_2, salary_3 => {
-                    callback(salary_3);
-                });
-            });
+    //Replace the callback with the promise
+    function getSalary() {
+        return new Promise(reslov => {
+            setTimeout(() => {
+                reslov(33000);
+            }, 1000);
         });
     }
     
-    getDisposIncome(disposable => {
-        console.log(disposable); 
+    function subtractTax(salary) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(salary * .75);
+            }, 1000);
+        });
+    }
+    
+    function subtractRent(salary) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(salary - 5000);
+            }, 1000);
+        });
+    }
+    
+    function getDisposIncome(callback) {
+        
+        const salaryPromise = getSalary();
+        const taxPromise = salaryPromise.then(salary_1 => {
+            return subtractTax(salary_1);
+        });
+        
+        const rentPromise = taxPromise.then(salary_2 => {
+            return subtractRent(salary_2);
+        });
+        
+        return rentPromise;
+    }
+    
+    
+    //Then is a method that puts a callback
+    //in the promises chain
+    getDisposIncome().then(disposable => {
+        console.log(disposable);
     });
 });
