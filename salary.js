@@ -1,11 +1,25 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    //Replace the callback with the promise
-    function getSalary() {
+    //Setting two salaries so that 
+    //subtraction can go independently
+    function getSalary(salary) {
         return new Promise(reslov => {
             setTimeout(() => {
-                reslov(33000);
+                reslov(salary);
             }, 1000);
+        });
+    }
+        
+    function getSalarySum() {
+        return Promise.all([
+            getSalary(10000),
+            getSalary(20000),
+            getSalary(55000),
+            getSalary(89000),
+            getSalary(115000),
+            getSalary(213000)
+        ]).then(salaries => {
+            return salaries.reduce((prev, curr) => prev + curr, 0)
         });
     }
     
@@ -13,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
         return new Promise(resolve => {
             setTimeout(() => {
                 resolve(salary * .75);
-            }, 1000);
+            }, 200);
         });
     }
     
@@ -21,22 +35,14 @@ document.addEventListener("DOMContentLoaded", function() {
         return new Promise(resolve => {
             setTimeout(() => {
                 resolve(salary - 5000);
-            }, 1000);
+            }, 200);
         });
     }
     
     function getDisposIncome(callback) {
         
-        const salaryPromise = getSalary();
-        const taxPromise = salaryPromise.then(salary_1 => {
-            return subtractTax(salary_1);
-        });
-        
-        const rentPromise = taxPromise.then(salary_2 => {
-            return subtractRent(salary_2);
-        });
-        
-        return rentPromise;
+        //True cleanup that promises bring
+        return getSalarySum().then(subtractTax).then(subtractRent);
     }
     
     
