@@ -17,7 +17,24 @@ document.addEventListener("DOMContentLoaded", function() {
     }).then(responses => {
        return Promise.all(responses.map(response => response.blob())); 
     }).then(blobs => {
-
+        return blobs.map(blob => URL.createObjectURL(blob));
+    }).then(urls => {
+        return Promise.all(
+            urls.map(url => {
+                return new Promise(reslove => {
+                    const image = new Image();
+                    image.addEventListener('load', () => {
+                        reslove(image)
+                    });
+                    image.src = url;
+                    
+                });
+            });
+        );
+    }).then(images => {
+        images.forEach(image => {
+            document.body.appendChild(image);
+        });
     });
 
 });
